@@ -1313,6 +1313,9 @@ void LIBUSB_CALL libusb_free_device_list(libusb_device **list,
 libusb_device * LIBUSB_CALL libusb_ref_device(libusb_device *dev);
 void LIBUSB_CALL libusb_unref_device(libusb_device *dev);
 
+void LIBUSB_CALL libusb_set_selected_if(libusb_device *dev, uint8_t interface);
+uint8_t LIBUSB_CALL libusb_get_selected_if(libusb_device *dev);
+
 int LIBUSB_CALL libusb_get_configuration(libusb_device_handle *dev,
 	int *config);
 int LIBUSB_CALL libusb_get_device_descriptor(libusb_device *dev,

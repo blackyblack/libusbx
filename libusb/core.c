@@ -666,7 +666,7 @@ ssize_t API_EXPORTED libusb_get_device_list(libusb_context *ctx,
 		usbi_mutex_lock(&ctx->usb_devs_lock);
 		list_for_each_entry(dev, &ctx->usb_devs, list, struct libusb_device) {
 			discdevs = discovered_devs_append(discdevs, dev);
-
+			
 			if (!discdevs) {
 				r = LIBUSB_ERROR_NO_MEM;
 				break;
@@ -695,6 +695,7 @@ ssize_t API_EXPORTED libusb_get_device_list(libusb_context *ctx,
 	for (i = 0; i < len; i++) {
 		struct libusb_device *dev = discdevs->devices[i];
 		ret[i] = libusb_ref_device(dev);
+                dev->selected_interface = 0;
 	}
 	*list = ret;
 
@@ -964,6 +965,7 @@ int API_EXPORTED libusb_get_max_iso_packet_size(libusb_device *dev,
  * \param dev the device to reference
  * \returns the same device
  */
+
 DEFAULT_VISIBILITY
 libusb_device * LIBUSB_CALL libusb_ref_device(libusb_device *dev)
 {
@@ -971,6 +973,24 @@ libusb_device * LIBUSB_CALL libusb_ref_device(libusb_device *dev)
 	dev->refcnt++;
 	usbi_mutex_unlock(&dev->lock);
 	return dev;
+}
+
+DEFAULT_VISIBILITY
+void LIBUSB_CALL libusb_set_selected_if(libusb_device *dev, uint8_t interface)
+{
+	usbi_mutex_lock(&dev->lock);
+	dev->selected_interface = interface;
+	usbi_mutex_unlock(&dev->lock);
+}
+
+DEFAULT_VISIBILITY
+uint8_t LIBUSB_CALL libusb_get_selected_if(libusb_device *dev)
+{
+	uint8_t ret = 0;
+	usbi_mutex_lock(&dev->lock);
+	ret = dev->selected_interface;
+	usbi_mutex_unlock(&dev->lock);
+	return ret;
 }
 
 /** \ingroup dev
