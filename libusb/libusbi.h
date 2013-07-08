@@ -298,7 +298,7 @@ struct libusb_device {
 	struct libusb_device* parent_dev;
 	uint8_t device_address;
 	uint8_t num_configurations;
-        uint8_t selected_interface;
+	uint8_t selected_interface;
 	enum libusb_speed speed;
 
 	struct list_head list;
